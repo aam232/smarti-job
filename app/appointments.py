@@ -19,12 +19,14 @@ def index():
     now = datetime.now()
     scheduled = db.select(Appointment).where(Appointment.status == SCHEDULED)
 
-    # Scheduled but already over: nobody has marked them Completed or Cancelled yet.
+    # Both lists are based on end_at, so every Scheduled appointment is in exactly one.
+    # Overdue: already over, but nobody has marked it Completed or Cancelled yet.
     overdue = db.session.scalars(
-        scheduled.where(Appointment.end_at < now).order_by(Appointment.start_at)
+        scheduled.where(Appointment.end_at <= now).order_by(Appointment.start_at)
     ).all()
+    # Upcoming: not over yet, which includes one that is happening right now.
     upcoming = db.session.scalars(
-        scheduled.where(Appointment.start_at >= now).order_by(Appointment.start_at)
+        scheduled.where(Appointment.end_at > now).order_by(Appointment.start_at)
     ).all()
     cancelled = db.session.scalars(
         db.select(Appointment)

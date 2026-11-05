@@ -3,7 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from . import db
 from .forms import JobForm, JobStatusForm, customer_choices, staff_choices
 from .models import Job, Staff
-from .statuses import JOB_ALLOWED, JOB_STATUSES, can_transition
+from .statuses import JOB_ALLOWED, JOB_STATUSES, OPEN_JOB_STATUSES, can_transition
 
 bp = Blueprint("jobs", __name__, url_prefix="/jobs")
 
@@ -54,7 +54,9 @@ def detail(job_id):
     # The dropdown only offers the statuses this job is allowed to move to.
     allowed = JOB_ALLOWED.get(job.status, set())
     status_form.status.choices = [(s, s) for s in JOB_STATUSES if s in allowed]
-    return render_template("jobs/detail.html", job=job, status_form=status_form)
+    return render_template(
+        "jobs/detail.html", job=job, status_form=status_form, open_statuses=OPEN_JOB_STATUSES,
+    )
 
 
 @bp.route("/<int:job_id>/status", methods=["POST"])
