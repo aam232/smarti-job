@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Staff{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Staff</h1>
+    <a class="button" href="{{ url_for('staff.new') }}">Add staff member</a>
+  </div>
+
+  {% if staff_members %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Assigned jobs</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for member in staff_members %}
+          <tr>
+            <td>{{ member.full_name }}</td>
+            <td>{{ member.role }}</td>
+            <td>{{ member.phone_number }}</td>
+            <td>{{ member.email or "—" }}</td>
+            <td>{{ member.jobs | length }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No staff yet.</p>
+  {% endif %}
+{% endblock %}

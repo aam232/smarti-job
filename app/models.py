@@ -1,4 +1,5 @@
 from . import db
+from .statuses import DEFAULT_APPOINTMENT_STATUS, DEFAULT_JOB_STATUS, DEFAULT_ONBOARDING_STATUS
 
 # Association table for the many-to-many link between jobs and staff.
 # The composite primary key (job_id + staff_id) stops the same person
@@ -20,7 +21,9 @@ class Customer(db.Model):
     address_line2 = db.Column(db.String(100), nullable=True)
     city = db.Column(db.String(50), nullable=False)
     postcode = db.Column(db.String(10), nullable=False)
-    onboarding_status = db.Column(db.String(20), nullable=False, default="New Enquiry")
+    onboarding_status = db.Column(
+        db.String(20), nullable=False, default=DEFAULT_ONBOARDING_STATUS
+    )
 
     jobs = db.relationship("Job", back_populates="customer")
     appointments = db.relationship("Appointment", back_populates="customer")
@@ -57,7 +60,7 @@ class Job(db.Model):
     location_line2 = db.Column(db.String(100), nullable=True)
     location_city = db.Column(db.String(50), nullable=False)
     location_postcode = db.Column(db.String(10), nullable=False)
-    status = db.Column(db.String(20), nullable=False, default="Pending")
+    status = db.Column(db.String(20), nullable=False, default=DEFAULT_JOB_STATUS)
 
     customer = db.relationship("Customer", back_populates="jobs")
     staff = db.relationship("Staff", secondary=job_staff, back_populates="jobs")
@@ -69,12 +72,12 @@ class Appointment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=False)
     # Exactly one staff member per appointment.
     staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"), nullable=False)
-    # Nullable: an appointment (e.g. a office consultation) can happen before any job exists.
+    # Nullable: an appointment (e.g. an office consultation) can happen before any job exists.
     job_id = db.Column(db.Integer, db.ForeignKey("job.id"), nullable=True)
     # Naive UK local time. No duration column: the form will compute end_at.
     start_at = db.Column(db.DateTime, nullable=False)
     end_at = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(20), nullable=False, default="Scheduled")
+    status = db.Column(db.String(20), nullable=False, default=DEFAULT_APPOINTMENT_STATUS)
 
     customer = db.relationship("Customer", back_populates="appointments")
     staff = db.relationship("Staff", back_populates="appointments")

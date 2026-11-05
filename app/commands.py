@@ -87,7 +87,7 @@ def seed():
             start_at=soon_start, end_at=soon_start + timedelta(hours=1),
             status="Scheduled",
         ),
-        # No job yet: a site survey for a new enquiry.
+        # No job yet: an office consultation for a new enquiry.
         Appointment(
             customer=aisha, staff=sarah, job=None,
             start_at=later_start, end_at=later_start + timedelta(hours=1),

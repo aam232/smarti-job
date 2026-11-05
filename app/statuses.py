@@ -4,6 +4,11 @@ ONBOARDING_STATUSES = ["New Enquiry", "In Progress", "Active", "Cancelled"]
 JOB_STATUSES = ["Pending", "In Progress", "Completed", "Cancelled"]
 APPOINTMENT_STATUSES = ["Scheduled", "Completed", "Cancelled"]
 
+# The first status in each list is the one new records start with.
+DEFAULT_ONBOARDING_STATUS = ONBOARDING_STATUSES[0]
+DEFAULT_JOB_STATUS = JOB_STATUSES[0]
+DEFAULT_APPOINTMENT_STATUS = APPOINTMENT_STATUSES[0]
+
 # current status -> set of statuses it is allowed to move to
 ONBOARDING_ALLOWED = {
     "New Enquiry": {"In Progress", "Cancelled"},

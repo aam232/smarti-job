@@ -36,7 +36,7 @@ def detail(customer_id):
     customer = db.get_or_404(Customer, customer_id)
     status_form = OnboardingStatusForm()
     # The dropdown only offers the statuses this customer is allowed to move to.
-    allowed = ONBOARDING_ALLOWED[customer.onboarding_status]
+    allowed = ONBOARDING_ALLOWED.get(customer.onboarding_status, set())
     status_form.status.choices = [(s, s) for s in ONBOARDING_STATUSES if s in allowed]
     return render_template("customers/detail.html", customer=customer, status_form=status_form)
 
