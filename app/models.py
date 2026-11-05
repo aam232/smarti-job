@@ -1,5 +1,10 @@
 from . import db
-from .statuses import DEFAULT_APPOINTMENT_STATUS, DEFAULT_JOB_STATUS, DEFAULT_ONBOARDING_STATUS
+from .statuses import (
+    DEFAULT_APPOINTMENT_STATUS,
+    DEFAULT_JOB_STATUS,
+    DEFAULT_ONBOARDING_STATUS,
+    OPEN_JOB_STATUSES,
+)
 
 # Association table for the many-to-many link between jobs and staff.
 # The composite primary key (job_id + staff_id) stops the same person
@@ -48,6 +53,10 @@ class Staff(db.Model):
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+    @property
+    def open_job_count(self):
+        return len([job for job in self.jobs if job.status in OPEN_JOB_STATUSES])
 
 
 class Job(db.Model):

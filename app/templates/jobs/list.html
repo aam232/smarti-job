@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Jobs{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Jobs</h1>
+    <a class="button" href="{{ url_for('jobs.new') }}">Create job</a>
+  </div>
+
+  {% if jobs %}
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Customer</th>
+          <th>Assigned staff</th>
+          <th>Location</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+          <tr>
+            <td><a href="{{ url_for('jobs.detail', job_id=job.id) }}">{{ job.title }}</a></td>
+            <td>{{ job.customer.full_name }}</td>
+            <td>{{ job.staff | map(attribute="full_name") | join(", ") }}</td>
+            <td>{{ job.location_city }} {{ job.location_postcode }}</td>
+            <td>{{ job.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No jobs yet.</p>
+  {% endif %}
+{% endblock %}

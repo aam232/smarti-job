@@ -5,7 +5,11 @@
 {% block content %}
   <div class="page-header">
     <h1>{{ customer.full_name }}</h1>
-    <a class="button" href="{{ url_for('customers.edit', customer_id=customer.id) }}">Edit</a>
+    <div class="actions">
+      <a class="button" href="{{ url_for('customers.edit', customer_id=customer.id) }}">Edit</a>
+      <a class="button" href="{{ url_for('jobs.new', customer_id=customer.id) }}">Create job</a>
+      <a class="button" href="{{ url_for('appointments.new', customer_id=customer.id) }}">Book appointment</a>
+    </div>
   </div>
 
   <div class="card">
@@ -49,7 +53,7 @@
       <tbody>
         {% for job in customer.jobs %}
           <tr>
-            <td>{{ job.title }}</td>
+            <td><a href="{{ url_for('jobs.detail', job_id=job.id) }}">{{ job.title }}</a></td>
             <td>{{ job.location_line1 }}, {{ job.location_city }} {{ job.location_postcode }}</td>
             <td>{{ job.staff | map(attribute="full_name") | join(", ") or "—" }}</td>
             <td>{{ job.status }}</td>

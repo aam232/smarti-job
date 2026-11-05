@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }}{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>{{ job.title }}</h1>
+    <a class="button" href="{{ url_for('appointments.new', customer_id=job.customer_id, job_id=job.id) }}">Book appointment for this job</a>
+  </div>
+
+  <div class="card">
+    <h2>Details</h2>
+    <dl>
+      <dt>Customer</dt>
+      <dd><a href="{{ url_for('customers.detail', customer_id=job.customer_id) }}">{{ job.customer.full_name }}</a></dd>
+      <dt>Location</dt>
+      <dd>
+        {{ job.location_line1 }}<br>
+        {% if job.location_line2 %}{{ job.location_line2 }}<br>{% endif %}
+        {{ job.location_city }}<br>
+        {{ job.location_postcode }}
+      </dd>
+      <dt>Description</dt>
+      <dd class="keep-lines">{{ job.description or "—" }}</dd>
+      <dt>Assigned staff</dt>
+      <dd>
+        {% for member in job.staff %}
+          {{ member.full_name }} ({{ member.role }})<br>
+        {% endfor %}
+      </dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h2>Status</h2>
+    <p><strong>{{ job.status }}</strong></p>
+
+    {# Only show the form if there is somewhere this job can move to #}
+    {% if status_form.status.choices %}
+      <form method="post" class="inline-form" action="{{ url_for('jobs.change_status', job_id=job.id) }}">
+        {{ status_form.hidden_tag() }}
+        {{ status_form.status.label }}
+        {{ status_form.status() }}
+        <button type="submit">Change status</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <h2>Appointments</h2>
+  {% if job.appointments %}
+    <table>
+      <thead>
+        <tr><th>When</th><th>Staff</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for appointment in job.appointments | sort(attribute="start_at") %}
+          <tr>
+            <td>{{ appointment.start_at.strftime("%d %b %Y, %H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
+            <td>{{ appointment.staff.full_name }}</td>
+            <td>{{ appointment.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No appointments for this job yet.</p>
+  {% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, redirect, render_template, url_for
+from flask import Flask, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 
 # Created here but not tied to any app yet. create_app() connects it with
@@ -25,21 +25,17 @@ def create_app(config=None):
 
     # Imported inside the function because these modules do `from . import db`,
     # which would fail if they were imported before db is defined above.
-    from . import customers, jobs, models, staff  # noqa: F401 (models registers the tables)
+    from . import appointments, customers, jobs, models, staff  # noqa: F401 (models registers the tables)
     from .commands import seed
 
     app.cli.add_command(seed)
     app.register_blueprint(customers.bp)
     app.register_blueprint(staff.bp)
     app.register_blueprint(jobs.bp)
+    app.register_blueprint(appointments.bp)
 
     @app.route("/")
     def home():
         return redirect(url_for("customers.index"))
-
-    # Placeholder until the upcoming-appointments page is built
-    @app.route("/upcoming")
-    def upcoming():
-        return render_template("placeholder.html", title="Upcoming")
 
     return app

@@ -28,3 +28,18 @@ def new():
         "staff/form.html", form=form, title="Add staff member",
         cancel_url=url_for("staff.index"),
     )
+
+
+@bp.route("/<int:staff_id>/edit", methods=["GET", "POST"])
+def edit(staff_id):
+    staff_member = db.get_or_404(Staff, staff_id)
+    form = StaffForm(obj=staff_member)  # pre-fills the form on GET
+    if form.validate_on_submit():
+        form.populate_obj(staff_member)
+        db.session.commit()
+        flash("Staff member updated.", "success")
+        return redirect(url_for("staff.index"))
+    return render_template(
+        "staff/form.html", form=form, title="Edit staff member",
+        cancel_url=url_for("staff.index"),
+    )

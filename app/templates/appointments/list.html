@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Upcoming{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Upcoming appointments</h1>
+    <a class="button" href="{{ url_for('appointments.new') }}">Book appointment</a>
+  </div>
+
+  {% for day, day_appointments in days.items() %}
+    <h2>{{ day.strftime("%A %d %B %Y") }}</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Customer</th>
+          <th>Staff</th>
+          <th>Job</th>
+          <th>Change status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in day_appointments %}
+          <tr>
+            <td>{{ appointment.start_at.strftime("%H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
+            <td><a href="{{ url_for('customers.detail', customer_id=appointment.customer_id) }}">{{ appointment.customer.full_name }}</a></td>
+            <td>{{ appointment.staff.full_name }}</td>
+            <td>
+              {% if appointment.job %}
+                <a href="{{ url_for('jobs.detail', job_id=appointment.job_id) }}">{{ appointment.job.title }}</a>
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>
+              <form method="post" class="inline-form" action="{{ url_for('appointments.change_status', appointment_id=appointment.id) }}">
+                {{ status_form.hidden_tag() }}
+                {# each row needs its own id, or every dropdown on the page would share one #}
+                {{ status_form.status(id="status-" ~ appointment.id) }}
+                <button type="submit">Update</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No upcoming appointments.</p>
+  {% endfor %}
+{% endblock %}

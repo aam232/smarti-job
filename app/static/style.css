@@ -100,7 +100,7 @@ th, td {
   margin-bottom: 0.25rem;
 }
 
-.field input, select {
+.field input, .field textarea, select {
   width: 100%;
   max-width: 24rem;
   padding: 0.4rem;
@@ -108,6 +108,10 @@ th, td {
   border-radius: 4px;
   font: inherit;
   box-sizing: border-box;
+}
+
+.field textarea {
+  min-height: 6rem;
 }
 
 select {
@@ -137,4 +141,9 @@ dt {
 
 dd {
   margin-left: 0;
+}
+
+/* Show the line breaks a user typed into a textarea */
+.keep-lines {
+  white-space: pre-line;
 }

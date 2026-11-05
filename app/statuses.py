@@ -9,6 +9,12 @@ DEFAULT_ONBOARDING_STATUS = ONBOARDING_STATUSES[0]
 DEFAULT_JOB_STATUS = JOB_STATUSES[0]
 DEFAULT_APPOINTMENT_STATUS = APPOINTMENT_STATUSES[0]
 
+# Jobs in these statuses still have work to do (used for staff workload counts).
+OPEN_JOB_STATUSES = ["Pending", "In Progress"]
+
+# The appointment status that books up a staff member's diary and shows as upcoming.
+SCHEDULED = "Scheduled"
+
 # current status -> set of statuses it is allowed to move to
 ONBOARDING_ALLOWED = {
     "New Enquiry": {"In Progress", "Cancelled"},
