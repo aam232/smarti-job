@@ -9,7 +9,7 @@ from wtforms.validators import DataRequired, Email, Length, Optional, Validation
 from . import db
 from .models import Customer, Job, Staff
 from .scheduling import find_clash
-from .statuses import ROLES
+from .statuses import OPEN_JOB_STATUSES, ROLES
 from .validators import uk_phone, uk_postcode
 
 # Every Length(max=...) below matches the String(...) size of the same column in
@@ -43,8 +43,9 @@ def staff_choices():
 
 
 def job_choices():
-    """Dropdown choices: 'No job', then every job labelled 'Title - Customer'."""
-    jobs = db.session.scalars(db.select(Job).order_by(Job.title)).all()
+    """Dropdown choices: 'No job', then every open job labelled 'Title - Customer'."""
+    query = db.select(Job).where(Job.status.in_(OPEN_JOB_STATUSES)).order_by(Job.title)
+    jobs = db.session.scalars(query).all()
     return [(BLANK, "No job")] + [(j.id, f"{j.title} - {j.customer.full_name}") for j in jobs]
 
 

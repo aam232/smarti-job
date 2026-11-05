@@ -15,6 +15,9 @@ OPEN_JOB_STATUSES = ["Pending", "In Progress"]
 # The appointment status that books up a staff member's diary and shows as upcoming.
 SCHEDULED = "Scheduled"
 
+# The appointment status that is final; these are only listed, read-only.
+CANCELLED = "Cancelled"
+
 # current status -> set of statuses it is allowed to move to
 ONBOARDING_ALLOWED = {
     "New Enquiry": {"In Progress", "Cancelled"},

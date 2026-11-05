@@ -1,15 +1,66 @@
 {% extends "base.html" %}
 
-{% block title %}Upcoming{% endblock %}
+{% block title %}Appointments{% endblock %}
 
 {% block content %}
+  {# The customer, staff and job cells, shared by all three tables #}
+  {% macro who_cells(appointment) %}
+    <td><a href="{{ url_for('customers.detail', customer_id=appointment.customer_id) }}">{{ appointment.customer.full_name }}</a></td>
+    <td>{{ appointment.staff.full_name }}</td>
+    <td>
+      {% if appointment.job %}
+        <a href="{{ url_for('jobs.detail', job_id=appointment.job_id) }}">{{ appointment.job.title }}</a>
+      {% else %}
+        —
+      {% endif %}
+    </td>
+  {% endmacro %}
+
+  {# The status form for one row. Only used for Scheduled appointments. #}
+  {% macro status_cell(appointment, status_form) %}
+    <td>
+      <form method="post" class="inline-form" action="{{ url_for('appointments.change_status', appointment_id=appointment.id) }}">
+        {{ status_form.hidden_tag() }}
+        {# each row needs its own id, or every dropdown on the page would share one #}
+        {{ status_form.status(id="status-" ~ appointment.id) }}
+        <button type="submit">Update</button>
+      </form>
+    </td>
+  {% endmacro %}
+
   <div class="page-header">
-    <h1>Upcoming appointments</h1>
+    <h1>Appointments</h1>
     <a class="button" href="{{ url_for('appointments.new') }}">Book appointment</a>
   </div>
 
+  {# Only shown when there is something to fix #}
+  {% if overdue %}
+    <h2>Overdue — still Scheduled</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Customer</th>
+          <th>Staff</th>
+          <th>Job</th>
+          <th>Change status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in overdue %}
+          <tr>
+            <td>{{ appointment.start_at.strftime("%d %b %Y, %H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
+            {{ who_cells(appointment) }}
+            {{ status_cell(appointment, status_form) }}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h2>Upcoming</h2>
   {% for day, day_appointments in days.items() %}
-    <h2>{{ day.strftime("%A %d %B %Y") }}</h2>
+    <h3>{{ day.strftime("%A %d %B %Y") }}</h3>
     <table>
       <thead>
         <tr>
@@ -24,23 +75,8 @@
         {% for appointment in day_appointments %}
           <tr>
             <td>{{ appointment.start_at.strftime("%H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
-            <td><a href="{{ url_for('customers.detail', customer_id=appointment.customer_id) }}">{{ appointment.customer.full_name }}</a></td>
-            <td>{{ appointment.staff.full_name }}</td>
-            <td>
-              {% if appointment.job %}
-                <a href="{{ url_for('jobs.detail', job_id=appointment.job_id) }}">{{ appointment.job.title }}</a>
-              {% else %}
-                —
-              {% endif %}
-            </td>
-            <td>
-              <form method="post" class="inline-form" action="{{ url_for('appointments.change_status', appointment_id=appointment.id) }}">
-                {{ status_form.hidden_tag() }}
-                {# each row needs its own id, or every dropdown on the page would share one #}
-                {{ status_form.status(id="status-" ~ appointment.id) }}
-                <button type="submit">Update</button>
-              </form>
-            </td>
+            {{ who_cells(appointment) }}
+            {{ status_cell(appointment, status_form) }}
           </tr>
         {% endfor %}
       </tbody>
@@ -48,4 +84,29 @@
   {% else %}
     <p>No upcoming appointments.</p>
   {% endfor %}
+
+  {# Cancelled is final, so these rows have no status form #}
+  <h2>Cancelled</h2>
+  {% if cancelled %}
+    <table>
+      <thead>
+        <tr>
+          <th>When</th>
+          <th>Customer</th>
+          <th>Staff</th>
+          <th>Job</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in cancelled %}
+          <tr>
+            <td>{{ appointment.start_at.strftime("%d %b %Y, %H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
+            {{ who_cells(appointment) }}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No cancelled appointments.</p>
+  {% endif %}
 {% endblock %}

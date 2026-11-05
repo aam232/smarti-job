@@ -7,31 +7,46 @@ from .forms import (
     BLANK, AppointmentForm, AppointmentStatusForm, customer_choices, job_choices, staff_choices,
 )
 from .models import Appointment
-from .statuses import APPOINTMENT_ALLOWED, APPOINTMENT_STATUSES, SCHEDULED, can_transition
+from .statuses import (
+    APPOINTMENT_ALLOWED, APPOINTMENT_STATUSES, CANCELLED, SCHEDULED, can_transition,
+)
 
 bp = Blueprint("appointments", __name__, url_prefix="/appointments")
 
 
 @bp.route("/")
 def index():
-    query = (
-        db.select(Appointment)
-        .where(Appointment.status == SCHEDULED, Appointment.start_at >= datetime.now())
-        .order_by(Appointment.start_at)
-    )
-    appointments = db.session.scalars(query).all()
+    now = datetime.now()
+    scheduled = db.select(Appointment).where(Appointment.status == SCHEDULED)
 
-    # Group by day. The query is already in time order, so each day's list stays in order too.
+    # Scheduled but already over: nobody has marked them Completed or Cancelled yet.
+    overdue = db.session.scalars(
+        scheduled.where(Appointment.end_at < now).order_by(Appointment.start_at)
+    ).all()
+    upcoming = db.session.scalars(
+        scheduled.where(Appointment.start_at >= now).order_by(Appointment.start_at)
+    ).all()
+    cancelled = db.session.scalars(
+        db.select(Appointment)
+        .where(Appointment.status == CANCELLED)
+        .order_by(Appointment.start_at.desc())  # most recent first
+    ).all()
+
+    # Group the upcoming ones by day. The query is already in time order, so each
+    # day's list stays in order too.
     days = {}
-    for appointment in appointments:
+    for appointment in upcoming:
         days.setdefault(appointment.start_at.date(), []).append(appointment)
 
-    # Every appointment on this page is Scheduled, so they all get the same dropdown
-    # and one form object can be reused for every row.
+    # Every appointment with a form (overdue and upcoming) is Scheduled, so they all
+    # get the same dropdown and one form object can be reused for every row.
     status_form = AppointmentStatusForm()
     allowed = APPOINTMENT_ALLOWED[SCHEDULED]
     status_form.status.choices = [(s, s) for s in APPOINTMENT_STATUSES if s in allowed]
-    return render_template("appointments/list.html", days=days, status_form=status_form)
+    return render_template(
+        "appointments/list.html",
+        overdue=overdue, days=days, cancelled=cancelled, status_form=status_form,
+    )
 
 
 @bp.route("/new", methods=["GET", "POST"])
