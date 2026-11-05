@@ -1,0 +1,61 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  color: #222;
+  background: #f5f6f8;
+}
+
+nav {
+  display: flex;
+  gap: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  background: #14406b;
+}
+
+nav a {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav .brand {
+  font-weight: bold;
+  margin-right: 1rem;
+}
+
+main {
+  max-width: 60rem;
+  margin: 1.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.flash {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.flash-success {
+  background: #d9f2e0;
+  color: #17562b;
+}
+
+.flash-error {
+  background: #fbdcdc;
+  color: #7a1f1f;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e0e2e6;
+}

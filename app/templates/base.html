@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | Smart Job</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <nav>
+    <a class="brand" href="{{ url_for('home') }}">Smarti</a>
+    <a href="{{ url_for('customers.index') }}">Customers</a>
+    <a href="{{ url_for('staff.index') }}">Staff</a>
+    <a href="{{ url_for('jobs.index') }}">Jobs</a>
+    <a href="{{ url_for('upcoming') }}">Upcoming</a>
+  </nav>
+
+  <main>
+    {# flash(message, "success") or flash(message, "error") adds a message here #}
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash flash-{{ category }}">{{ message }}</div>
+    {% endfor %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
