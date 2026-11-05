@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% from "_form_macros.html" import render_field %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  {# novalidate turns off the browser's own checks, so the server's messages are always the ones shown #}
+  <form method="post" novalidate>
+    {# hidden_tag() outputs the hidden CSRF token input #}
+    {{ form.hidden_tag() }}
+    {% for error in form.errors.get("csrf_token", []) %}
+      <p class="field-error">{{ error }} Please try again.</p>
+    {% endfor %}
+
+    {{ render_field(form.first_name) }}
+    {{ render_field(form.last_name) }}
+    {{ render_field(form.phone_number) }}
+    {{ render_field(form.email) }}
+    {{ render_field(form.address_line1) }}
+    {{ render_field(form.address_line2) }}
+    {{ render_field(form.city) }}
+    {{ render_field(form.postcode) }}
+
+    <div class="actions">
+      <button type="submit">Save</button>
+      <a href="{{ cancel_url }}">Cancel</a>
+    </div>
+  </form>
+{% endblock %}

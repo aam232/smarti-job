@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.full_name }}{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>{{ customer.full_name }}</h1>
+    <a class="button" href="{{ url_for('customers.edit', customer_id=customer.id) }}">Edit</a>
+  </div>
+
+  <div class="card">
+    <h2>Contact</h2>
+    <dl>
+      <dt>Phone</dt>
+      <dd>{{ customer.phone_number }}</dd>
+      <dt>Email</dt>
+      <dd>{{ customer.email or "—" }}</dd>
+      <dt>Address</dt>
+      <dd>
+        {{ customer.address_line1 }}<br>
+        {% if customer.address_line2 %}{{ customer.address_line2 }}<br>{% endif %}
+        {{ customer.city }}<br>
+        {{ customer.postcode }}
+      </dd>
+    </dl>
+  </div>
+
+  <div class="card">
+    <h2>Onboarding status</h2>
+    <p><strong>{{ customer.onboarding_status }}</strong></p>
+
+    {# Only show the form if there is somewhere this customer can move to #}
+    {% if status_form.status.choices %}
+      <form method="post" class="inline-form" action="{{ url_for('customers.change_status', customer_id=customer.id) }}">
+        {{ status_form.hidden_tag() }}
+        {{ status_form.status.label }}
+        {{ status_form.status() }}
+        <button type="submit">Change status</button>
+      </form>
+    {% endif %}
+  </div>
+
+  <h2>Jobs</h2>
+  {% if customer.jobs %}
+    <table>
+      <thead>
+        <tr><th>Title</th><th>Location</th><th>Staff</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for job in customer.jobs %}
+          <tr>
+            <td>{{ job.title }}</td>
+            <td>{{ job.location_line1 }}, {{ job.location_city }} {{ job.location_postcode }}</td>
+            <td>{{ job.staff | map(attribute="full_name") | join(", ") or "—" }}</td>
+            <td>{{ job.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No jobs yet.</p>
+  {% endif %}
+
+  <h2>Appointments</h2>
+  {% if customer.appointments %}
+    <table>
+      <thead>
+        <tr><th>When</th><th>Staff</th><th>Job</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        {% for appointment in customer.appointments | sort(attribute="start_at") %}
+          <tr>
+            <td>{{ appointment.start_at.strftime("%d %b %Y, %H:%M") }} – {{ appointment.end_at.strftime("%H:%M") }}</td>
+            <td>{{ appointment.staff.full_name }}</td>
+            <td>{{ appointment.job.title if appointment.job else "—" }}</td>
+            <td>{{ appointment.status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No appointments yet.</p>
+  {% endif %}
+{% endblock %}

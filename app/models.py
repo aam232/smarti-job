@@ -69,7 +69,7 @@ class Appointment(db.Model):
     customer_id = db.Column(db.Integer, db.ForeignKey("customer.id"), nullable=False)
     # Exactly one staff member per appointment.
     staff_id = db.Column(db.Integer, db.ForeignKey("staff.id"), nullable=False)
-    # Nullable: an appointment (e.g. a survey) can happen before any job exists.
+    # Nullable: an appointment (e.g. a office consultation) can happen before any job exists.
     job_id = db.Column(db.Integer, db.ForeignKey("job.id"), nullable=True)
     # Naive UK local time. No duration column: the form will compute end_at.
     start_at = db.Column(db.DateTime, nullable=False)

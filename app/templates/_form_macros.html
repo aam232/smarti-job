@@ -1,0 +1,10 @@
+{# Renders one form field: label, input, then any validation errors under it. #}
+{% macro render_field(field) %}
+  <div class="field">
+    {{ field.label }}
+    {{ field() }}
+    {% for error in field.errors %}
+      <p class="field-error">{{ error }}</p>
+    {% endfor %}
+  </div>
+{% endmacro %}

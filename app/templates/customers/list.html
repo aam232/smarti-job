@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+    <h1>Customers</h1>
+    <a class="button" href="{{ url_for('customers.new') }}">Add customer</a>
+  </div>
+
+  {% if customers %}
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>City</th>
+          <th>Postcode</th>
+          <th>Onboarding status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+          <tr>
+            <td><a href="{{ url_for('customers.detail', customer_id=customer.id) }}">{{ customer.full_name }}</a></td>
+            <td>{{ customer.phone_number }}</td>
+            <td>{{ customer.city }}</td>
+            <td>{{ customer.postcode }}</td>
+            <td>{{ customer.onboarding_status }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No customers yet.</p>
+  {% endif %}
+{% endblock %}

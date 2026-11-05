@@ -59,3 +59,82 @@ th, td {
   padding: 0.5rem 0.75rem;
   border-bottom: 1px solid #e0e2e6;
 }
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card {
+  background: #fff;
+  padding: 0.25rem 1.25rem 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+/* Buttons: both <button> and links that look like buttons */
+.button, button {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  background: #14406b;
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover, button:hover {
+  background: #0e2f50;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.field input, select {
+  width: 100%;
+  max-width: 24rem;
+  padding: 0.4rem;
+  border: 1px solid #b8bcc4;
+  border-radius: 4px;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+select {
+  width: auto;
+}
+
+.actions a {
+  margin-left: 0.75rem;
+}
+
+.field-error {
+  color: #7a1f1f;
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+}
+
+.inline-form {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+dt {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+dd {
+  margin-left: 0;
+}
