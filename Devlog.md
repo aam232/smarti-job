@@ -100,6 +100,7 @@ A timestamped record of how the project was built: decisions, problems found, an
 | Design | Claude (chat) | Explained options and trade-offs; kept a decisions log | Made every decision myself; corrected it where it was wrong |
 | Blocks 1–5 | Claude Code | Code written from my specifications | Read every file before running or committing; found and fixed the issues listed above; tested every feature by hand; ran pytest myself |
 | Docs | Claude (chat) | README draft | Edited and rewrote the reasons in my own words |
+| **Total** | | **~3h 40m** | ~40 min over the 3-hour guide, mostly up-front design. Build + tests: 1h 35m |
 
 ## Known limitations
 
