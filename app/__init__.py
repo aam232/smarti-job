@@ -16,7 +16,7 @@ def create_app(config=None):
 
     app.config.from_mapping(
         SECRET_KEY=os.environ.get("SECRET_KEY", "dev-secret-key-change-me"),
-        SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "smartjob.db"),
+        SQLALCHEMY_DATABASE_URI="sqlite:///" + os.path.join(app.instance_path, "smarti.db"),
     )
     if config:
         app.config.update(config)  # tests pass e.g. an in-memory database here
